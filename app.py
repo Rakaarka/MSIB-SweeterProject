@@ -1,3 +1,6 @@
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
 from flask import (
     Flask, 
     render_template, 
@@ -14,19 +17,22 @@ import hashlib
 from werkzeug.utils import secure_filename
 from jwt.exceptions import ExpiredSignatureError, DecodeError
 
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+
+MONGODB_URI = os.environ.get("MONGODB_URI")
+DB_NAME =  os.environ.get("DB_NAME")
+
+client = MongoClient(MONGODB_URI)
+db = client[DB_NAME]
 
 app = Flask(__name__)
 
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['UPLOAD_FOLDER'] = './static/profile_pics'
 
-cxn_str = 'mongodb+srv://test:sparta@cluster0.qmkvztt.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp'
-client = MongoClient(cxn_str)
-
-db = client.dbsparta_plus_four
 
 SECRET_KEY = "SPARTA"
-
 
 
 @app.route("/")
